@@ -44,8 +44,7 @@ dependancies:
 
   esedbexport:    /opt/esedbtools/esedbexport
   mingw:          /usr/bin/i686-w64-mingw32-gcc
-  wce:            ./progs/wce-32.exe
-  wce64:          ./progs/wce-64.exe
+  wce:            ./progs/wce.exe
 
 # Path to scripts
   ntdspwdump:     ./progs/ntdspwdump.py
