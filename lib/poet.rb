@@ -202,34 +202,37 @@ class Poet
 								rescue LogonError
 									@logger.error("#{(work_unit[2]).ljust(15)} - Logon Failure User:#{work_unit[0]} Pass:#{work_unit[1]}")
 									print_bad("#{(work_unit[2]).ljust(15)} - Logon Failure User:#{work_unit[0]} Pass:#{work_unit[1]}")
-											
-									# Lock threads with mutex and ask user what they would like to do when login failure occurs
-									mutex.synchronize do
-										unless continue
-											pause = true
+										
+									# Ignore local accounts
+									unless Menu.opts[:domain].eql? '.'
+										# Lock threads with mutex and ask user what they would like to do when login failure occurs
+										mutex.synchronize do
+											unless continue
+												pause = true
 
-											# Sleep a little to let other threads finish up a little to make it eaiser to read
-											sleep 5
+												# Sleep a little to let other threads finish up a little to make it eaiser to read
+												sleep 5
 
-											selection = ''
-											until selection =~ /^(s|a|c)$/
-												print "    [s]kip account #{highlight(work_unit[0])}, [a]bort scan, or [c]ontinue and ignore failures?"
-												selection = rgets(' : ').downcase
+												selection = ''
+												until selection =~ /^(s|a|c)$/
+													print "    [s]kip account #{highlight(work_unit[0])}, [a]bort scan, or [c]ontinue and ignore failures?"
+													selection = rgets(' : ').downcase
+												end
+
+												case selection
+												when "s"
+													# Clear out current queue containing account with login issues
+													queue.clear
+												when "a"
+													# Clear out current queue and set die to true to break loop for queues array
+													queue.clear
+													die = true
+												when "c"
+													# continue on and 
+													continue = true
+												end
+												pause = false
 											end
-
-											case selection
-											when "s"
-												# Clear out current queue containing account with login issues
-												queue.clear
-											when "a"
-												# Clear out current queue and set die to true to break loop for queues array
-												queue.clear
-												die = true
-											when "c"
-												# continue on and 
-												continue = true
-											end
-											pause = false
 										end
 									end
 
