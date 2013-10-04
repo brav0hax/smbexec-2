@@ -21,8 +21,8 @@ class HashesWorkstation < Poet::Scanner
 			end
 
 			# If either of the WCE binaries do not exist, skip
-			if not File.exists? Menu.extbin[:wce64] or not File.exists? Menu.extbin[:wce]
-				print_warning("WCE binary does not exist, skipping in Windows digest dump")
+			if not File.exists? Menu.extbin[:wce]
+				print_warning("WCE binary does not exist, skipping Windows digest dump")
 				@wce = false
 			end
 		end
