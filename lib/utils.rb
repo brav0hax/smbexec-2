@@ -363,7 +363,7 @@ class String
 	# Remove defined characters from string
 	def strip_chars!(chars)
 		chars = Regexp.escape(chars)
-		self.gsub(/[#{chars}]/, "")
+		self.gsub!(/[#{chars}]/, "")
 	end
 
 	def to_ps_base64!

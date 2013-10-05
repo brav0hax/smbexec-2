@@ -1,8 +1,8 @@
 require 'poet'
 require 'cachedump'
+require 'hashdump'
 
 class HashesWorkstation < Poet::Scanner
-	#include Cachedump
 	self.mod_name = "Workstation & Server Hashes"
 	self.description = ""
 	self.invasive = true
@@ -89,11 +89,15 @@ class HashesWorkstation < Poet::Scanner
 
 			full_print_line = ''
 			has_hashes = false
-			hashdump = ''
 
+			hashdumper = Hashdump.new
 			# parse hashes out of registry hives locally
 			begin
-				hashdump = `#{pwdump} #{@log}/hashes/#{host}/system #{@log}/hashes/#{host}/sam`
+				sam = Hashdump::Hive.new("#{@log}/hashes/#{host}/sam")
+				sys = Hashdump::Hive.new("#{@log}/hashes/#{host}/system")
+				hashdump = hashdumper.dump_creds(sam, sys)
+				# Strip null characters from dump
+				hashdump.strip_chars!("\x00")
 
 				if hashdump.lines.count > 0 
 					full_print_line << "#{highlight(hashdump.lines.count)} Local, ".ljust(10)

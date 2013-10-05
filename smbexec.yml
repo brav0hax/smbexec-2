@@ -49,7 +49,6 @@ dependancies:
 # Path to scripts
   ntdspwdump:     ./progs/ntdspwdump.py
   dsusers:        /opt/NTDSXtract/dsusers.py
-  pwdump:         /opt/creddump/pwdump.py
 
-# Optional cryptor.exe for payload packing/protecting
-#  crypter: ./progs/Crypter.exe
+# Optional crypter.exe for payload packing/protecting
+#  crypter: /opt/Hyperion-1.0/crypter.exe

