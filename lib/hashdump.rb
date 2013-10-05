@@ -100,7 +100,7 @@ class Hashdump
 				usercount = usercount - 1
 			end
 		rescue StandardError => dumpcreds
-			return
+			return ""
 		end
 	end
 
