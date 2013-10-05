@@ -84,17 +84,18 @@ class Guide < Menu
 				if not file_exists?(bin)
 					print_warning("#{bin} does not exists, functionality may break")
 					warn = true
-				end
-				# When winexe comes up check the version to see if hashes must be exported
-				if key.to_s.eql? 'smbwinexe'
-					winexe_version = `#{bin}`
-					if winexe_version =~ /winexe version 1\.01/
-						Menu.opts[:export_hash] = false
-					elsif winexe_version =~ /winexe version 1\.00/
-						Menu.opts[:export_hash] = true
-					# Figure out what to do if unknown version detected later
-					else
-						Menu.opts[:export_hash] = false
+				else
+					# When winexe comes up check the version to see if hashes must be exported
+					if key.to_s.eql? 'smbwinexe'
+						winexe_version = `#{bin}`
+						if winexe_version =~ /winexe version 1\.01/
+							Menu.opts[:export_hash] = false
+						elsif winexe_version =~ /winexe version 1\.00/
+							Menu.opts[:export_hash] = true
+						# Figure out what to do if unknown version detected later
+						else
+							Menu.opts[:export_hash] = false
+						end
 					end
 				end
 			else

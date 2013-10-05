@@ -25,7 +25,7 @@ module Utils
 	end
 
 	# Remaps standard error to file, yields to code enclosed, then resets
-	def capture_stderr(local)
+	def capture_stderr(local = '/dev/null')
 		previous_stdout = $stderr.clone
 		$stderr.reopen(local)
 		yield

