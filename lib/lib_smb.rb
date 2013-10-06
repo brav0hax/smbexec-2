@@ -165,7 +165,7 @@ module Lib_smb
 
 			return wce_parsed
 		else
-			print_warning("#{host.ljust(15)} - Could not determine architecture")
+			print_warning("#{host.ljust(15)} - Issues determining temp directory, stopped WCE upload")
 			return ""
 		end
 	end

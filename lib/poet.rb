@@ -317,6 +317,8 @@ class Poet
 			raise NoAccess, "path not found"
 		elsif result =~ /NT_STATUS_CONNECTION_REFUSED/
 			raise NetError, "SMB ports appear closed"
+		elsif result =~ /BAD_NETWORK_NAME/
+			raise NetError, "Issues with path"
 		end
 
  		# Hack to get rid of the hashes added to stdout by 1.01 if a hash is used for auth.
