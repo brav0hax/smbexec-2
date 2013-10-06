@@ -50,16 +50,16 @@ f_debian(){
 		fi
         done
 
-	#Gem required for new host enumeration option
-	echo -e "\e[1;33m[*]\e[0m Installing netaddr gem for host list creation..."
-	gem install netaddr &> /tmp/smbexec-inst/geminstall
+	#Required gems via bundle install
+	echo -e "\e[1;33m[*]\e[0m Installing required ruby gems..."
+	bundle install &> /tmp/smbexec-inst/geminstall
 	geminstall=$(cat /tmp/smbexec-inst/geminstall|grep -o 'command not found')
 		if [ -z "$geminstall" ]; then
-			echo -e "\t\e[1;32m[+]\e[0m netaddr gem was successfully installed."
+			echo -e "\t\e[1;32m[+]\e[0m Gems were successfully installed."
 		else
-			echo -e "\t\e[1;31m[!]\e[0m Something went wrong, unable to install the gem."
-			echo -e "\t\e[1;31m[!]\e[0m If you are using rvm run this command when installer completes:"
-			echo -e "\t\e[1;31m[!]\e[0m rvmsudo gem install netaddr"
+			echo -e "\t\e[1;31m[!]\e[0m Something went wrong, unable to install the gems."
+			echo -e "\t\e[1;31m[!]\e[0m If you are using rvm run this command from the smbexec dir when installer completes:"
+			echo -e "\t\e[1;31m[!]\e[0m rvmsudo bundle install"
 		fi
 	#ntds extract for AD hash dumping
 	f_ntdsxtract
