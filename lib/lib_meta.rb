@@ -205,7 +205,7 @@ module Lib_meta
 		Dir.chdir(File.dirname(Menu.extbin[:crypter])) do
 			capture_stderr {
 				# Run and log output
-				log(cmd) { `#{cmd}` }
+				 `#{cmd}`
 			}
 		end
 

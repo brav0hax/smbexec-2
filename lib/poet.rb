@@ -345,14 +345,16 @@ class Poet
 		return execute_command(Menu.extbin[:smbwmic], options, command)
 	end
 
-	def log(tag, &block)
+	def log(tag = "", &block)
 		begin
 			@logger.debug("\e[1;37m[Starting]\e[0m #{tag}")
 			value = block.call
+			# If return is nil, make emtpy for string below
+			value ||= ""
 			@logger.info("\e[1;34m[Completed]\e[0m #{tag}\n\e[1;35m[Result]\e[0m: #{value}")
 			return value
 		rescue => e
-			@logger.error("Error with #{tag} - #{e}")
+			@logger.error("Error with #{tag} - #{e}") if @logger
 			print_warning("Unhandled logging error: #{e}")
 		end
 	end
