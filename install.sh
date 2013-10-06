@@ -26,7 +26,7 @@ f_debian(){
 		apt-get install -y binutils-mingw-w64 gcc-mingw-w64 mingw-w64 mingw-w64-dev &> /tmp/smbexec-inst/checkinstall
 	fi
 
-	reqs="autoconf cmake comerr-dev g++ gcc libtalloc-dev libtevent-dev libpopt-dev libbsd-dev zlib1g-dev libc6-dev make python-dev ruby-bundler wget xterm"
+	reqs="autoconf cmake comerr-dev g++ gcc libtalloc-dev libtevent-dev libpopt-dev libbsd-dev zlib1g-dev libc6-dev make nmap python-dev ruby-bundler wget xterm"
 	for i in $reqs; do
 		dpkg -s "$i" &> /tmp/smbexec-inst/checkinstall
 		isinstalled=$(cat /tmp/smbexec-inst/checkinstall | grep -o "Status: install ok installed")
@@ -327,7 +327,8 @@ else
 	echo -e "\n\e[1;34m[*]\e[0m Compiling smbexeclient, this may take a while..."
 	sleep 2
 	cd /tmp/smbexec-inst/samba/ && ./configure --with-static-modules=static && make -j8
-	cp /tmp/smbexec-inst/samba/bin/default/source4/client/smbclient4 $path/progs/smbexeclient
+	cp -R /tmp/smbexec-inst/samba/bin/default/source4/client $path/sources/
+	ln -f -s $smbexecpath/smbexec/sources/client/smbclient4 $smbexecpath/smbexec/progs/smbexeclient
 	make clean &> /dev/null
 	cd $path
 
