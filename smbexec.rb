@@ -2,7 +2,12 @@
 
 raise 'Must run as root' unless Process.uid == 0 or Process.euid == 0
 
-APP_ROOT = File.dirname(__FILE__)
+smbexec = __FILE__
+while File.symlink?(smbexec)
+	smbexec = File.readlink(smbexec)
+end
+APP_ROOT = File.dirname(smbexec)
+
 
 $:.unshift( File.join(APP_ROOT, 'lib') )
 
