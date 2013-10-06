@@ -192,7 +192,7 @@ f_install(){
 if [ ! -e /tmp/smbexec-inst/ ]; then mkdir /tmp/smbexec-inst/; fi
 
 	while [[ $valid != 1 ]]; do
-		read -e -p "Please provide the path you'd like to place the smbexec folder. [/opt] : " smbexecpath	
+		read -e -p "Please provide the path you'd like to place the smbexec folder. [/opt] : " smbexecpath
 		if [ -z $smbexecpath ]; then
 			smbexecpath="/opt"
 			valid=1
@@ -316,7 +316,7 @@ sleep 5
 f_compilesmbclient(){
 
 if [ ! -d /tmp/smbexec-inst ]; then mkdir /tmp/smbexec-inst;fi
- 
+
 if [ -e $path/progs/smbexeclient ]; then
 	echo -e "\n\e[1;32m[+]\e[0m Looks like smbexeclient is already compiled, moving to smbwinexe compilation..."
 	sleep 3
@@ -327,8 +327,8 @@ else
 	echo -e "\n\e[1;34m[*]\e[0m Compiling smbexeclient, this may take a while..."
 	sleep 2
 	cd /tmp/smbexec-inst/samba/ && ./configure --with-static-modules=static && make -j8
-	cp -R /tmp/smbexec-inst/samba/bin/default/source4/client $path/sources/
-	ln -f -s $smbexecpath/smbexec/sources/client/smbclient4 $smbexecpath/smbexec/progs/smbexeclient
+	cp -R /tmp/smbexec-inst/samba/bin/default/source4/ $path/sources/
+	ln -f -s $path/sources/source4/client/smbclient4 $path/progs/smbexeclient
 	make clean &> /dev/null
 	cd $path
 
