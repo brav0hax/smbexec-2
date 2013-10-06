@@ -6,7 +6,7 @@ class Guide < Menu
 
 	def initialize(options)
 		# Load config file
-		config_file = options[:config] || 'smbexec.yml'
+		config_file = options[:config] || "smbexec.yml"
 		config = YAML.load_file(config_file)
 		time = Time.now
 

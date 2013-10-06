@@ -88,4 +88,6 @@ optparse = OptionParser.new do |opts|
 	opts.parse!
 end
 
-guide = Guide.new(options)
+Dir.chdir(APP_ROOT) do
+	Guide.new(options)
+end
