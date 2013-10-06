@@ -8,36 +8,36 @@ f_debian(){
 	f_Banner
 	f_install
 
-	echo -e "\n\e[1;33m[*]\e[0m Installing pre-reqs for Debian/Ubuntu...\n"
+	echo -e "\n\e[1;34m[*]\e[0m Installing pre-reqs for Debian/Ubuntu...\n"
 
 	if [ ! -e /etc/lsb-release ] && [ ! -e /etc/issue ]; then echo -n -e "\e[1;31m[!]\e[0m I can't confirm this is a Debian\Ubuntu machine. Installs may fail."; read; fi
 
-	echo -e "\e[1;33m[*]\e[0m Running 'updatedb' if it fails then install 'locate' from repos and try again\n"
+	echo -e "\e[1;34m[*]\e[0m Running 'updatedb' if it fails then install 'locate' from repos and try again\n"
 	updatedb
 
 	#Install the correct mingw
 	mingw64=$(apt-cache search gcc-mingw-w64)
 
 	if [ -z "$mingw64" ]; then
-		echo -e "\e[1;33m[*]\e[0m Installing mingw requirements..."
+		echo -e "\e[1;34m[*]\e[0m Installing mingw requirements..."
 		apt-get install -y mingw32-runtime gcc-mingw32 mingw32-binutils &> /tmp/smbexec-inst/checkinstall #Old systems, hopefully this is never used
 	else
-		echo -e "\e[1;33m[*]\e[0m Installing mingw requirements..."
+		echo -e "\e[1;34m[*]\e[0m Installing mingw requirements..."
 		apt-get install -y binutils-mingw-w64 gcc-mingw-w64 mingw-w64 mingw-w64-dev &> /tmp/smbexec-inst/checkinstall
 	fi
 
-	reqs="autoconf cmake comerr-dev g++ gcc libtalloc-dev libtevent-dev libpopt-dev libbsd-dev zlib1g-dev libc6-dev make python-dev wget xterm"
+	reqs="autoconf cmake comerr-dev g++ gcc libtalloc-dev libtevent-dev libpopt-dev libbsd-dev zlib1g-dev libc6-dev make python-dev ruby-bundler wget xterm"
 	for i in $reqs; do
 		dpkg -s "$i" &> /tmp/smbexec-inst/checkinstall
 		isinstalled=$(cat /tmp/smbexec-inst/checkinstall | grep -o "Status: install ok installed")
 		if [ -z "$isinstalled" ]; then
-			echo -e "\e[1;33m[-] $i is not installed, will attempt to install from repos"
+			echo -e "\e[1;33m[-]\e[0m $i is not installed, will attempt to install from repos"
 
 			if [ ! -z $(apt-get install -y "$i" | grep -o "E: Couldn") ]; then
 				echo -e "\e[1;31m[-]\e[0m $i could not be installed from the repository"
 			else
 				dpkg -s "$i" &> /tmp/smbexec-inst/checkinstall
-				isinstalled=$(cat /tmp/smbexec-inst/checkinstall | grep -o "Status: install ok installed")				
+				isinstalled=$(cat /tmp/smbexec-inst/checkinstall | grep -o "Status: install ok installed")
 				if [ ! -z "$isinstalled" ]; then
 					update=1
 					echo -e "\t\e[1;32m[+]\e[0m $i was successfully installed from the repository."
@@ -51,7 +51,7 @@ f_debian(){
         done
 
 	#Required gems via bundle install
-	echo -e "\e[1;33m[*]\e[0m Installing required ruby gems..."
+	echo -e "\e[1;34m[*]\e[0m Installing required ruby gems..."
 	bundle install &> /tmp/smbexec-inst/geminstall
 	geminstall=$(cat /tmp/smbexec-inst/geminstall|grep -o 'command not found')
 		if [ -z "$geminstall" ]; then
@@ -73,7 +73,7 @@ f_debian(){
 	fi
 
 	if [ "$update" == "1" ]; then
-		echo -e "\e[1;33m[*]\e[0m Running 'updatedb' again because we installed some new stuff\n"
+		echo -e "\e[1;34m[*]\e[0m Running 'updatedb' again because we installed some new stuff\n"
 		updatedb
 		echo -e "\n\e[1;33m...happy hunting!\e[0m\n\n"
 	else
@@ -89,11 +89,11 @@ f_rhfedora(){
 	f_Banner
 	f_install
 
-        echo -e "\n\e[1;33m[*]\e[0m Installing pre-reqs for Red Hat/Fedora...\n"
+        echo -e "\n\e[1;34m[*]\e[0m Installing pre-reqs for Red Hat/Fedora...\n"
 
 	if [ ! -e /etc/redhat-release ]; then echo -n -e "\e[1;31m[!]\e[0m I can't confirm this is a Red Hat/Fedora machine. Installs may fail."; read; fi
 
-	echo -e "\e[1;33m[*]\e[0m Running 'updatedb', if it fails install 'locate' from repos and try again\n"
+	echo -e "\e[1;34m[*]\e[0m Running 'updatedb', if it fails install 'locate' from repos and try again\n"
 	updatedb
 
 	reqs="autoconf cmake gcc gcc-c++ mingw32-binutils mingw32-gcc python-devel wget xterm"
@@ -135,7 +135,7 @@ f_rhfedora(){
 	fi
 
 	if [ "$update" == "1" ]; then
-		echo -e "\n\e[1;33m[*]\e[0m Running 'updatedb' again because we installed some new stuff\n"
+		echo -e "\n\e[1;34m[*]\e[0m Running 'updatedb' again because we installed some new stuff\n"
 		updatedb
 		echo -e "\n\e[1;33m...happy hunting!\e[0m\n\n"
 	else
@@ -207,19 +207,19 @@ if [ ! -e /tmp/smbexec-inst/ ]; then mkdir /tmp/smbexec-inst/; fi
 	smbexecpath=$(echo $smbexecpath | sed 's/\/$//g')
 
 	if [ $PWD == $smbexecpath/smbexec ]; then
-		echo -e "\e[1;33m[*]\e[0m OK...keeping the folder where it is..."
+		echo -e "\e[1;34m[*]\e[0m OK...keeping the folder where it is..."
 		sleep 3
-		chmod 755 $smbexecpath/smbexec/smbexec.sh
+		chmod 755 $smbexecpath/smbexec/smbexec.rb
 		chmod 755 $smbexecpath/smbexec/progs/*
-		ln -f -s $smbexecpath/smbexec/smbexec.sh /usr/bin/smbexec
+		ln -f -s $smbexecpath/smbexec/smbexec.rb /usr/bin/smbexec
 	else
 		# CD out of folder, mv folder to specified path and create symbolic link
 		cd ..
 		rm -rf $smbexecpath/smbexec > /dev/null
 		mv $PWD/smbexec $smbexecpath/smbexec
-		chmod 755 $smbexecpath/smbexec/smbexec.sh
+		chmod 755 $smbexecpath/smbexec/smbexec.rb
 		chmod 755 $smbexecpath/smbexec/progs/*
-		ln -f -s $smbexecpath/smbexec/smbexec.sh /usr/bin/smbexec
+		ln -f -s $smbexecpath/smbexec/smbexec.rb /usr/bin/smbexec
 	fi
 
 	# Workaround to get rid of annoying samba error for patched smbclient
@@ -234,17 +234,17 @@ f_ntdsxtract(){
 NTDSXtractinstall=$(locate -l 1 -b "\dsusers.py")
 
 if [ ! -z "$NTDSXtractinstall" ]; then
-	echo -e "\e[1;32m[+] I found NTDSXtract on your system\e[0m"
+	echo -e "\e[1;32m[+]\e[0m I found NTDSXtract on your system"
 else
-	echo -e "\n\e[1;33m[*] Downloading NTDSXTRACT from ntdsxtract.com...\e[0m"
+	echo -e "\n\e[1;34m[*]\e[0m Downloading NTDSXTRACT from ntdsxtract.com..."
 	sleep 2
 	wget http://www.ntdsxtract.com/downloads/ntdsxtract/ntdsxtract_v1_0.zip -O /tmp/smbexec-inst/ntdsxtract_v1_0.zip
 	unzip /tmp/smbexec-inst/ntdsxtract_v1_0.zip -d /tmp/smbexec-inst/
 	mv /tmp/smbexec-inst/NTDSXtract\ 1.0 /opt/NTDSXtract
 	if [ -e /opt/NTDSXtract/dsusers.py ]; then
-		echo -e "\n\e[1;32m[+] NTDSXtract has been installed...\e[0m"
+		echo -e "\n\e[1;32m[+]\e[0m NTDSXtract has been installed..."
 	else
-		echo -e "\e[1;31m[!] NTDSXtract didn't install properly. You may need to do it manually\e[0m"
+		echo -e "\e[1;31m[!]\e[0m NTDSXtract didn't install properly. You may need to do it manually"
 	fi
 fi
 
@@ -258,12 +258,12 @@ if [ ! -z "$esedbexportinstall" ]; then
 	echo -e "\e[1;32m[+]\e[0m I found esedbexport on your system"
 else
 	update=1
-	echo -e "\n\e[1;33m[*]\e[0m Downloading libesedb from authors google docs drive..."
+	echo -e "\n\e[1;34m[*]\e[0m Downloading libesedb from authors google docs drive..."
 	sleep 2
 	wget --no-check-certificate https://googledrive.com/host/0B3fBvzttpiiSN082cmxsbHB0anc/libesedb-alpha-20120102.tar.gz -O /tmp/smbexec-inst/libesedb-alpha-20120102.tar.gz
 	tar -zxf /tmp/smbexec-inst/libesedb-alpha-20120102.tar.gz -C /tmp/smbexec-inst/
 	currentpath=$PWD
-	echo -e "\n\e[1;33m[*]\e[0m Compiling esedbtools..."
+	echo -e "\n\e[1;34m[*]\e[0m Compiling esedbtools..."
 	sleep 2
 	cd /tmp/smbexec-inst/libesedb-20120102/
 	./configure --enable-static-executables && make
@@ -280,17 +280,17 @@ fi
 ##################################################
 f_metasploitinstall(){
 update=1
-echo -e "\n\e[1;33m[*]\e[0m Downloading Metasploit from metasploit.com, this will take a while to complete"
+echo -e "\n\e[1;34m[*]\e[0m Downloading Metasploit from metasploit.com, this will take a while to complete"
 
 if [ $(uname -m) == "x86_64" ]; then
 	wget http://downloads.metasploit.com/data/releases/metasploit-latest-linux-x64-installer.run -O /tmp/smbexec-inst/metasploit-latest-linux-x64-installer.run
-	echo -e "\n\e[1;33m[*]\e[0m The Metasploit installer will walk you through the rest of the process"
+	echo -e "\n\e[1;34m[*]\e[0m The Metasploit installer will walk you through the rest of the process"
 	sleep 5
 	chmod 755 /tmp/smbexec-inst/metasploit-latest-linux-x64-installer.run
 	/tmp/smbexec-inst/metasploit-latest-linux-x64-installer.run
 else
 	wget http://downloads.metasploit.com/data/releases/metasploit-latest-linux-installer.run -O /tmp/smbexec-inst/metasploit-latest-linux-installer.run
-	echo -e "\n\e[1;33m[*]\e[0m The Metasploit installer will walk you through the rest of the process"
+	echo -e "\n\e[1;34m[*]\e[0m The Metasploit installer will walk you through the rest of the process"
 	sleep 5
 	chmod 755 /tmp/smbexec-inst/metasploit-latest-linux-installer.run
 	/tmp/smbexec-inst/metasploit-latest-linux-installer.run
@@ -315,16 +315,18 @@ sleep 5
 ##################################################
 f_compilesmbclient(){
 
+if [ ! -d /tmp/smbexec-inst ]; then mkdir /tmp/smbexec-inst;fi
+ 
 if [ -e $path/progs/smbexeclient ]; then
 	echo -e "\n\e[1;32m[+]\e[0m Looks like smbexeclient is already compiled, moving to smbwinexe compilation..."
 	sleep 3
 else
-	echo -e "\n\e[1;33m[*]\e[0m Extracting samba..."
+	echo -e "\n\e[1;34m[*]\e[0m Extracting samba..."
 	sleep 2
-	tar -zxf $path/sources/samba.tar.gz -C /tmp/smbexec-inst/ > /dev/null 2>&1
-	echo -e "\n\e[1;33m[*]\e[0m Compiling smbexeclient, this may take a while..."
+	tar -xf $path/sources/samba.tar.gz -C /tmp/smbexec-inst/ > /dev/null 2>&1
+	echo -e "\n\e[1;34m[*]\e[0m Compiling smbexeclient, this may take a while..."
 	sleep 2
-	cd /tmp/smbexec-inst/samba/source/ && ./configure && make -j8
+	cd /tmp/smbexec-inst/samba/ && ./configure --with-static-modules=static && make -j8
 	cp /tmp/smbexec-inst/samba/bin/default/source4/client/smbclient4 $path/progs/smbexeclient
 	make clean &> /dev/null
 	cd $path
@@ -341,16 +343,19 @@ fi
 
 ##################################################
 f_compilewinexe(){
+
+if [ ! -d /tmp/smbexec-inst ]; then mkdir /tmp/smbexec-inst;fi
+
 if [ -e $path/progs/smbwinexe ]; then
 	echo -e "\n\e[1;32m[+]\e[0m Looks like smbwinexe is already compiled, finishing up..."
 	sleep 3
 else
-	echo -e "\n\e[1;33m[*]\e[0m Extracting winexe..."
+	echo -e "\n\e[1;34m[*]\e[0m Extracting winexe..."
 	sleep 2
 	tar -zxf $path/sources/winexe.tar.gz -C /tmp/smbexec-inst/
-	echo -e "\n\e[1;33m[*]\e[0m Checking for samba source..."
+	echo -e "\n\e[1;34m[*]\e[0m Checking for samba source..."
 		if [ ! -d /tmp/smbexec-inst/samba ]; then tar -zxf $path/sources/samba.tar.gz -C /tmp/smbexec-inst/ > /dev/null 2>&1; fi
-	echo -e "\n\e[1;33m[*]\e[0m Compiling smbwinexe, this may take a while..."
+	echo -e "\n\e[1;34m[*]\e[0m Compiling smbwinexe, this may take a while..."
 	sleep 2
 	cd /tmp/smbexec-inst/winexe/source && ./waf -j8 configure --samba-dir=../../samba  && ./waf -j8
 	cp /tmp/smbexec-inst/winexe/source/build/winexe-static $path/progs/smbwinexe
