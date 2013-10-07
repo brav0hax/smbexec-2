@@ -44,6 +44,7 @@ module Lib_smb
 		domain = '.' if domain.upcase.eql? "LOCALHOST"
 
 		# Only update if user provides data
+		domain_banner = domain unless domain.empty?
 		Menu.opts[:domain] = domain unless domain.empty?
 
 		# Update banner with correct credential banner
