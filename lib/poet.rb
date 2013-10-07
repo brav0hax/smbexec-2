@@ -200,8 +200,14 @@ class Poet
 
 								# If logon failure then kill current module
 								rescue LogonError
+									if work_unit[1]
+										if work_unit[1].is_ntlm?
+											print_bad("#{(work_unit[2]).ljust(15)} - Logon Failure User:#{work_unit[0]} Pass:NTLM Hash")
+										else
+											print_bad("#{(work_unit[2]).ljust(15)} - Logon Failure User:#{work_unit[0]} Pass:#{work_unit[1]}")
+										end
+									end
 									@logger.error("#{(work_unit[2]).ljust(15)} - Logon Failure User:#{work_unit[0]} Pass:#{work_unit[1]}")
-									print_bad("#{(work_unit[2]).ljust(15)} - Logon Failure User:#{work_unit[0]} Pass:#{work_unit[1]}")
 										
 									# Ignore local accounts
 									unless Menu.opts[:domain].eql? '.'
@@ -239,7 +245,7 @@ class Poet
 								# If access denied
 								rescue NoAccess => e
 									@logger.warn("#{(work_unit[2]).ljust(15)} - Account #{work_unit[0]} #{e}")
-									print_warning("#{(work_unit[2]).ljust(15)} - Account #{highlight(work_unit[0])} #{e}")
+									vprint_warning("#{(work_unit[2]).ljust(15)} - Account #{highlight(work_unit[0])} #{e}")
 								
 								# If the account is locked out, warn and skip iteration
 								rescue LockOutError
@@ -314,7 +320,7 @@ class Poet
 		elsif result =~ /NT_STATUS_ACCESS_DENIED/ or result =~ /ERROR: Login to remote object./
 			raise NoAccess, "does not have required permissions"
 		elsif result =~ /NT_STATUS_OBJECT_PATH_NOT_FOUND/
-			raise NoAccess, "path not found"
+			raise NetError, "path not found"
 		elsif result =~ /NT_STATUS_CONNECTION_REFUSED/
 			raise NetError, "SMB ports appear closed"
 		elsif result =~ /BAD_NETWORK_NAME/

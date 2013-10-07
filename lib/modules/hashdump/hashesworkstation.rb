@@ -13,13 +13,14 @@ class HashesWorkstation < Poet::Scanner
 		title = "System Credential Dump"
 		puts color_header(title)
 
+		# Make sure it has enough time to do its thing
+		if @timeout < 180
+			@timout = @timeout + 180
+		end
+
 		# Set up for WCE dump if configured
 		@wce = Menu.opts[:wcedump]
 		if @wce 
-			if @timeout < 180
-				@timout = @timeout + 180
-			end
-
 			# If either of the WCE binaries do not exist, skip
 			if not File.exists? Menu.extbin[:wce]
 				print_warning("WCE binary does not exist, skipping Windows digest dump")
