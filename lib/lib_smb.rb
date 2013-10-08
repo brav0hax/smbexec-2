@@ -113,10 +113,10 @@ module Lib_smb
 		# Command to use with smbexeclient
 		smbclient_output = ''	
 		capture_stderr('/dev/null') {
-			smbclient_output = smbclient("//#{host}/#{share}", "-c showconnect")
+			smbclient_output = smbclient("//#{host}/#{share}", "-c volume")
 		}
 		# If share is returned access exists
-		if smbclient_output =~ /^\/\/#{host}\//
+		if smbclient_output =~ /^Volume:/
 			return true
 		else
 			return false
