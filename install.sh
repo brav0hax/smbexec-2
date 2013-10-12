@@ -326,9 +326,8 @@ else
 	tar -xf $path/sources/samba.tar.gz -C /tmp/smbexec-inst/ > /dev/null 2>&1
 	echo -e "\n\e[1;34m[*]\e[0m Compiling smbexeclient, this may take a while..."
 	sleep 2
-	cd /tmp/smbexec-inst/samba/ && ./configure --with-static-modules=static && make -j8
-	cp -R /tmp/smbexec-inst/samba/bin/default/source4/ $path/sources/
-	ln -f -s $path/sources/source4/client/smbclient4 $path/progs/smbexeclient
+	cd /tmp/smbexec-inst/samba/source3 && ./configure.developer && make bin/smbclient
+	cp /tmp/smbexec-inst/samba/source3/smbclient $path/progs/smbexeclient
 	make clean &> /dev/null
 	cd $path
 
