@@ -327,7 +327,7 @@ else
 	echo -e "\n\e[1;34m[*]\e[0m Compiling smbexeclient, this may take a while..."
 	sleep 2
 	cd /tmp/smbexec-inst/samba/source3 && ./configure.developer && make bin/smbclient
-	cp /tmp/smbexec-inst/samba/source3/smbclient $path/progs/smbexeclient
+	cp /tmp/smbexec-inst/samba/source3/bin/smbclient $path/progs/smbexeclient
 	make clean &> /dev/null
 	cd $path
 
