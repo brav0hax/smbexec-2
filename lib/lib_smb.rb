@@ -113,10 +113,10 @@ module Lib_smb
 		# Command to use with smbexeclient
 		smbclient_output = ''	
 		capture_stderr('/dev/null') {
-			smbclient_output = smbclient("//#{host}/#{share}", "-c volume")
+			smbclient_output = smbclient("//#{host}/#{share}", "-c showconnect")
 		}
 		# If share is returned access exists
-		if smbclient_output =~ /^Volume:/
+		if smbclient_output =~ /^\/\/#{host}\//
 			return true
 		else
 			return false
@@ -125,7 +125,6 @@ module Lib_smb
 
 	def wce(username, password, host)
 		smboptions = "--system //#{host}"
-		# Check if 64 bit to determine which binary to upload
 		
 		temp_dir = ''		
 		3.times do
@@ -135,7 +134,7 @@ module Lib_smb
 		end
 		wceexe = '' 
 
-		# Stop error out if machine is not ont a domain
+		# Stop error out if machine is not on a domain
 		unless temp_dir.empty?
 			wceexe = Menu.extbin[:wce]
 	
